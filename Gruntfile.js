@@ -14,7 +14,7 @@ var indexFile = fs.readFileSync('src/template.index.html').toString();
 var indexTemplate = _.template(indexFile);
 
 /**
- * This is SUPER jank but I cant get the underscore templating to evaluate
+ * This is SUPER jank but I can't get the underscore templating to evaluate
  * correctly with custom regexes, so I'm just going to use interpolate
  * and define the strings here.
  */
@@ -22,13 +22,11 @@ var indexTemplate = _.template(indexFile);
 var prodDependencies = [
   '<script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/4.1.1/es5-shim.min.js"></script>',
   '<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>',
-  '<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.3.3/underscore-min.js"></script>',
   '<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>'
 ];
 
 var devDependencies = [
   '<script src="lib/jquery-1.8.0.min.js"></script>',
-  '<script src="lib/underscore-min.js"></script>',
   '<script src="lib/raphael-min.js"></script>',
   '<script src="lib/es5-shim.min.js"></script>'
 ];
@@ -43,7 +41,7 @@ module.exports = function(grunt) {
     grunt.log.writeln(compliments[index]);
   });
 
-  grunt.registerTask('lintStrings', 'Find if an INTL string doesnt exist', function() {
+  grunt.registerTask('lintStrings', 'Find if an INTL string doesn\'t exist', function() {
     var child_process = require('child_process');
     child_process.exec('node src/js/intl/checkStrings', function(err, output) {
       grunt.log.writeln(output);
@@ -62,7 +60,7 @@ module.exports = function(grunt) {
       hashedMinFile = 'bundle.js';
     }
     var jsRegex = /bundle\.min\.\w+\.js/;
-    _.each(buildFiles, function(jsFile) {
+    buildFiles.forEach(function(jsFile) {
       if (jsRegex.test(jsFile)) {
         if (hashedMinFile) {
           throw new Error('more than one hashed file: ' + jsFile + hashedMinFile);
@@ -76,7 +74,7 @@ module.exports = function(grunt) {
 
     var styleRegex = /main\.\w+\.css/;
     var hashedStyleFile;
-    _.each(buildFiles, function(styleFile) {
+    buildFiles.forEach(function(styleFile) {
       if (styleRegex.test(styleFile)) {
         if (hashedStyleFile) {
           throw new Error('more than one hashed style: ' + styleFile + hashedStyleFile);
@@ -113,10 +111,6 @@ module.exports = function(grunt) {
         'src/levels/**/*.js'
       ],
       options: {
-        ignores: [
-          'src/js/**/*.ios.js',
-          'src/js/native_react_views/*.js'
-        ],
         curly: true,
         // sometimes triple equality is just redundant and unnecessary
         eqeqeq: false,
@@ -211,6 +205,11 @@ module.exports = function(grunt) {
       verbose: true,
       requirejs: false
     },
+    env: {
+      prod: {
+        NODE_ENV: 'production',
+      },
+    },
     browserify: {
       options: {
         transform: [require('grunt-react').browserify]
@@ -235,9 +234,10 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-jasmine-node');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-react');
+  grunt.loadNpmTasks('grunt-env');
 
   grunt.registerTask('build',
-    ['clean', 'browserify', 'uglify', 'hash', 'buildIndex', 'shell:gitAdd', 'jasmine_node', 'jshint', 'lintStrings', 'compliment']
+    ['clean', 'env', 'browserify', 'uglify', 'hash', 'buildIndex', 'shell:gitAdd', 'jasmine_node', 'jshint', 'lintStrings', 'compliment']
   );
   grunt.registerTask('lint', ['jshint', 'compliment']);
   grunt.registerTask('fastBuild', ['clean', 'browserify', 'hash', 'buildIndexDev', 'jshint']);
@@ -247,4 +247,3 @@ module.exports = function(grunt) {
   grunt.registerTask('test', ['jasmine_node']);
   grunt.registerTask('casperTest', ['shell:casperTest']);
 };
-

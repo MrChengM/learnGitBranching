@@ -65,7 +65,7 @@ exports.dialog = {
       markdowns: [
         '## Êtes-vous sûr de vouloir voir la solution ?',
         '',
-        'Je crois en vous ! Vous pouvez le faire'
+        'Je crois en vous ! Vous pouvez le faire !'
       ]
     }
   }],
@@ -99,7 +99,7 @@ exports.dialog = {
     type: 'ModalAlert',
     options: {
       markdowns: [
-        '## Впевнений, що хошеш побачити розв’язок?',
+        '## Впевнений, що хочеш побачити розв’язок?',
         '',
         'Я вірю в тебе! Ти впораєшся!'
       ]
